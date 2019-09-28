@@ -6,6 +6,8 @@ var WIZARD_COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 1
 var WIZARD_EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var WIZARDS_QTY = 4;
 
+var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+
 var showWizardSetup = function () {
   var userDialog = document.querySelector('.setup');
   userDialog.classList.remove('hidden');
@@ -14,8 +16,8 @@ var showWizardSetup = function () {
 };
 
 var getRandomItem = function (arr) {
-  var randomIndex = arr[Math.floor(Math.random() * arr.length)];
-  return randomIndex;
+  var randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
 };
 
 var generateWizards = function (wizardsCount) {
@@ -31,23 +33,20 @@ var generateWizards = function (wizardsCount) {
   return wizards;
 };
 
-var renderWizard = function () {
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+var renderWizard = function (wizard) {
   var wizardElement = similarWizardTemplate.cloneNode(true);
-  for (var i = 0; i < WIZARDS_QTY; i++) {
-    var wizard = generateWizards(WIZARDS_QTY);
-    wizardElement.querySelector('.setup-similar-label').textContent = wizard[i].name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard[i].coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard[i].eyesColor;
-  }
+  wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
+  wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
+  wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
   return wizardElement;
 };
 
 var getWizards = function () {
   var similarListElement = document.querySelector('.setup-similar-list');
   var fragment = document.createDocumentFragment();
+  var wizards = generateWizards(WIZARDS_QTY);
   for (var i = 0; i < WIZARDS_QTY; i++) {
-    fragment.appendChild(renderWizard());
+    fragment.appendChild(renderWizard(wizards[i]));
   }
   return similarListElement.appendChild(fragment);
 };
