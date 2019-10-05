@@ -5,8 +5,6 @@ var WIZARD_SURNAMES = ['да Марья', 'Верон', 'Мирабелла', '�
 var WIZARD_COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
 var WIZARD_EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var WIZARDS_QTY = 4;
-var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
-var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
@@ -71,29 +69,35 @@ var inputCoatColor = document.querySelector('input[name="coat-color"]');
 var inputFireballColor = document.querySelector('input[name="fireball-color"]');
 
 var changeElementColor = function (element, elementColors, input, property) {
-  element.addEventListener('click', function () {
-    var randomElementColor = getRandomItem(elementColors);
-    if (property === 'fill') {
-      element.style.fill = randomElementColor;
-    } else {
-      element.style.background = randomElementColor;
-    }
-    input.value = randomElementColor;
-  });
+  var randomElementColor = getRandomItem(elementColors);
+  if (property === 'fill') {
+    element.style.fill = randomElementColor;
+  } else {
+    element.style.background = randomElementColor;
+  }
+  input.value = randomElementColor;
 };
-
-changeElementColor(wizardCoat, COAT_COLORS, inputCoatColor, 'fill');
-changeElementColor(wizardEyes, EYES_COLORS, inputEyesColor, 'fill');
-changeElementColor(wizardFireball, FIREBALL_COLORS, inputFireballColor, 'background');
 
 var openPopup = function () {
   setup.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
+  wizardCoat.addEventListener('click', function () {
+    changeElementColor(wizardCoat, WIZARD_COAT_COLORS, inputCoatColor, 'fill');
+  });
+  wizardEyes.addEventListener('click', function () {
+    changeElementColor(wizardEyes, WIZARD_EYES_COLORS, inputEyesColor, 'fill');
+  });
+  wizardFireball.addEventListener('click', function () {
+    changeElementColor(wizardFireball, FIREBALL_COLORS, inputFireballColor, 'background');
+  });
 };
 
 var closePopup = function () {
   setup.classList.add('hidden');
   document.removeEventListener('keydown', onPopupEscPress);
+  wizardCoat.removeEventListener('click', changeElementColor);
+  wizardEyes.removeEventListener('click', changeElementColor);
+  wizardFireball.removeEventListener('click', changeElementColor);
 };
 
 var submitForm = function () {
