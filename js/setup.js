@@ -89,32 +89,32 @@ var changeElementColor = function (element, elementColors, input, property) {
   input.value = randomElementColor;
 };
 
-var changeColorWizardCoat = function () {
+var onWizardCoatClick = function () {
   changeElementColor(wizardCoat, WIZARD_COAT_COLORS, inputCoatColor, 'fill');
 };
 
-var changeColorWizardEyes = function () {
+var onWizardEyesClick = function () {
   changeElementColor(wizardEyes, WIZARD_EYES_COLORS, inputEyesColor, 'fill');
 };
 
-var changeColorWizardFireball = function () {
+var onWizardFireballClick = function () {
   changeElementColor(wizardFireball, FIREBALL_COLORS, inputFireballColor, 'background');
 };
 
 var openPopup = function () {
   setup.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
-  wizardCoat.addEventListener('click', changeColorWizardCoat);
-  wizardEyes.addEventListener('click', changeColorWizardEyes);
-  wizardFireball.addEventListener('click', changeColorWizardFireball);
+  wizardCoat.addEventListener('click', onWizardCoatClick);
+  wizardEyes.addEventListener('click', onWizardEyesClick);
+  wizardFireball.addEventListener('click', onWizardFireballClick);
 };
 
 var closePopup = function () {
   setup.classList.add('hidden');
   document.removeEventListener('keydown', onPopupEscPress);
-  wizardCoat.removeEventListener('click', changeColorWizardCoat);
-  wizardEyes.removeEventListener('click', changeColorWizardEyes);
-  wizardFireball.removeEventListener('click', changeColorWizardFireball);
+  wizardCoat.removeEventListener('click', onWizardCoatClick);
+  wizardEyes.removeEventListener('click', onWizardEyesClick);
+  wizardFireball.removeEventListener('click', onWizardFireballClick);
 };
 
 var submitForm = function () {
