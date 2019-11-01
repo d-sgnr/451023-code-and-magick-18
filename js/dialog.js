@@ -2,6 +2,11 @@
 
 (function () {
 
+  var WIZARD_COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
+  var WIZARD_EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
+  var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
+  var WIZARD_QTY = 4;
+
   var setup = document.querySelector('.setup');
   var setupOpen = document.querySelector('.setup-open');
   var setupClose = setup.querySelector('.setup-close');
@@ -17,9 +22,9 @@
   var inputCoatColor = document.querySelector('input[name="coat-color"]');
   var inputFireballColor = document.querySelector('input[name="fireball-color"]');
 
-  var WIZARD_COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
-  var WIZARD_EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
-  var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
+  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+  var similarWizardBlock = document.querySelector('.setup-similar');
+  var similarListElement = document.querySelector('.setup-similar-list');
 
   var onWizardCoatClick = function () {
     window.colorize(wizardCoat, WIZARD_COAT_COLORS, inputCoatColor, 'fill');
@@ -67,32 +72,13 @@
   };
 
   var submitForm = function () {
-    setupForm.submit();
+    setupForm.addEventListener('submit', function (evt) {
+      window.backend.save(new FormData(setupForm), function () {
+        setup.classList.add('hidden');
+      });
+      evt.preventDefault();
+    });
   };
-
-  setupClose.addEventListener('click', function () {
-    closePopup();
-  });
-
-  setupOpen.addEventListener('click', function () {
-    openPopup();
-  });
-
-  setupOpen.addEventListener('keydown', function (evt) {
-    window.util.isEnterEvent(evt, openPopup);
-  });
-
-  setupClose.addEventListener('keydown', function (evt) {
-    window.util.isEnterEvent(evt, closePopup);
-  });
-
-  setupSubmit.addEventListener('click', function () {
-    submitForm();
-  });
-
-  setupSubmit.addEventListener('keydown', function (evt) {
-    window.util.isEnterEvent(evt, submitForm);
-  });
 
   var onClickPreventDefault = function (evt) {
     evt.preventDefault();
@@ -144,6 +130,64 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
+  var renderWizard = function (wizard) {
+    var wizardElement = similarWizardTemplate.cloneNode(true);
+    wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+    return wizardElement;
+  };
+
+  var successHandler = function (wizards) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < WIZARD_QTY; i++) {
+      fragment.appendChild(renderWizard(wizards[i]));
+    }
+    similarListElement.appendChild(fragment);
+
+    similarWizardBlock.classList.remove('hidden');
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  setupClose.addEventListener('click', function () {
+    closePopup();
+  });
+
+  setupOpen.addEventListener('click', function () {
+    openPopup();
+  });
+
+  setupOpen.addEventListener('keydown', function (evt) {
+    window.util.isEnterEvent(evt, openPopup);
+  });
+
+  setupClose.addEventListener('keydown', function (evt) {
+    window.util.isEnterEvent(evt, closePopup);
+  });
+
+  setupSubmit.addEventListener('click', function () {
+    submitForm();
+  });
+
+  setupSubmit.addEventListener('keydown', function (evt) {
+    window.util.isEnterEvent(evt, submitForm);
+  });
+
   dialogHandler.addEventListener('mousedown', dialogDrag);
+
+  setup.classList.remove('hidden');
+
+  window.backend.load(successHandler, errorHandler);
 
 })();
